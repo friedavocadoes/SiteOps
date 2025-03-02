@@ -10,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
-import { Plus, Clock } from "lucide-react";
+import { Plus, Clock, Search } from "lucide-react";
 
 type Site = {
   id: number;
@@ -22,8 +22,8 @@ type ProgressEntry = {
   id: number;
   siteId: number;
   date: string;
+  materialName: string;
   manhours: number;
-  materials: string;
   expenses: number;
 };
 
@@ -32,10 +32,12 @@ export default function MaintenanceTracker() {
   const [selectedSite, setSelectedSite] = useState<Site | null>(null);
   const [progressEntries, setProgressEntries] = useState<ProgressEntry[]>([]);
   const [newSite, setNewSite] = useState({ name: "", location: "" });
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showCustomForm, setShowCustomForm] = useState(false);
   const [newProgress, setNewProgress] = useState({
     date: "",
+    materialName: "",
     manhours: 0,
-    materials: "",
     expenses: 0,
   });
 
@@ -59,10 +61,12 @@ export default function MaintenanceTracker() {
     setProgressEntries([...progressEntries, entry]);
     setNewProgress({
       date: "",
+      materialName: "",
       manhours: 0,
-      materials: "",
       expenses: 0,
     });
+    setShowCustomForm(false);
+    setShowAddModal(false);
   };
 
   const filteredProgress = selectedSite
@@ -134,61 +138,122 @@ export default function MaintenanceTracker() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>Date</Label>
-                <Input
-                  type="date"
-                  value={newProgress.date}
-                  onChange={(e) =>
-                    setNewProgress({ ...newProgress, date: e.target.value })
-                  }
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>Manhours</Label>
-                <Input
-                  type="number"
-                  value={newProgress.manhours}
-                  onChange={(e) =>
-                    setNewProgress({
-                      ...newProgress,
-                      manhours: +e.target.value,
-                    })
-                  }
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>Materials</Label>
-                <Input
-                  value={newProgress.materials}
-                  onChange={(e) =>
-                    setNewProgress({
-                      ...newProgress,
-                      materials: e.target.value,
-                    })
-                  }
-                  placeholder="Enter materials used"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>Expenses</Label>
-                <Input
-                  type="number"
-                  value={newProgress.expenses}
-                  onChange={(e) =>
-                    setNewProgress({
-                      ...newProgress,
-                      expenses: +e.target.value,
-                    })
-                  }
-                />
-              </div>
-            </div>
-            <Button onClick={handleLogProgress}>
+            <Button onClick={() => setShowAddModal(true)}>
               <Plus className="mr-2 h-4 w-4" />
-              Log Progress
+              Add Progress
             </Button>
+
+            {/* Add Modal */}
+            {showAddModal && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+                <Card className="w-full max-w-md">
+                  <CardHeader>
+                    <CardTitle>Add Progress</CardTitle>
+                    <CardDescription>
+                      Choose how to add progress
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <Button
+                      variant="outline"
+                      className="w-full"
+                      onClick={() => {
+                        // Add from Inventory (do nothing for now)
+                        setShowAddModal(false);
+                      }}
+                    >
+                      Add from Inventory
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="w-full"
+                      onClick={() => {
+                        setShowCustomForm(true);
+                      }}
+                    >
+                      Add Custom
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+
+            {/* Custom Form */}
+            {showCustomForm && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+                <Card className="w-full max-w-md">
+                  <CardHeader>
+                    <CardTitle>Add Custom Progress</CardTitle>
+                    <CardDescription>
+                      Enter details for the progress entry
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                      <Label>Date</Label>
+                      <Input
+                        type="date"
+                        value={newProgress.date}
+                        onChange={(e) =>
+                          setNewProgress({
+                            ...newProgress,
+                            date: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Material Name</Label>
+                      <Input
+                        value={newProgress.materialName}
+                        onChange={(e) =>
+                          setNewProgress({
+                            ...newProgress,
+                            materialName: e.target.value,
+                          })
+                        }
+                        placeholder="Enter material name"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Manhours</Label>
+                      <Input
+                        type="number"
+                        value={newProgress.manhours}
+                        onChange={(e) =>
+                          setNewProgress({
+                            ...newProgress,
+                            manhours: +e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Expenses</Label>
+                      <Input
+                        type="number"
+                        value={newProgress.expenses}
+                        onChange={(e) =>
+                          setNewProgress({
+                            ...newProgress,
+                            expenses: +e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                    <div className="flex justify-end space-x-2">
+                      <Button
+                        variant="outline"
+                        onClick={() => setShowCustomForm(false)}
+                      >
+                        Cancel
+                      </Button>
+                      <Button onClick={handleLogProgress}>Save</Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
           </CardContent>
         </Card>
       )}
@@ -218,8 +283,8 @@ export default function MaintenanceTracker() {
                   <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <Label>Materials</Label>
-                        <p>{entry.materials}</p>
+                        <Label>Material</Label>
+                        <p>{entry.materialName}</p>
                       </div>
                       <div>
                         <Label>Expenses</Label>

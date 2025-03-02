@@ -10,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
-import { Plus, Clock, Search } from "lucide-react";
+import { Plus, Clock } from "lucide-react";
 
 type Site = {
   id: number;

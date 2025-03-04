@@ -13,7 +13,7 @@ import {
 import { Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
 import SiteCard from "../components/SiteCard";
-import Navbar from "../components/Navbar"; // ✅ Added Navbar
+import Navbar from "../components/Navbar";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { db } from "@/app/firebase/config";
@@ -24,7 +24,7 @@ import {
   deleteDoc,
   doc,
 } from "firebase/firestore";
-import { Skeleton } from "../components/ui/skeleton"; // ✅ Skeleton for loading effect
+import { Skeleton } from "../components/ui/skeleton";
 
 type Site = {
   id: string;
@@ -37,7 +37,7 @@ export default function Home() {
   const [newSite, setNewSite] = useState({ name: "", location: "" });
   const { user } = useAuth();
   const router = useRouter();
-  const [loading, setLoading] = useState(true); // ✅ Track loading state
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!user) {
@@ -120,8 +120,7 @@ export default function Home() {
             {/* Site List */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {loading
-                ? // ✅ Skeleton Loading Effect
-                  Array(3)
+                ? Array(3)
                     .fill(0)
                     .map((_, index) => (
                       <Skeleton

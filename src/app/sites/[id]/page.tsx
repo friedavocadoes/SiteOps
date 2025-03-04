@@ -46,7 +46,6 @@ type Site = {
 };
 
 export default function SiteDetailsPage() {
-  const searchParams = useSearchParams();
   const params = useParams();
   const id = typeof params.id === "string" ? params.id : params.id?.[0];
 
@@ -61,28 +60,27 @@ export default function SiteDetailsPage() {
     price: "",
     date: "",
   });
-  const [site, setSite] = useState<Site | null>(null);
+  // const [site, setSite] = useState<Site | null>(null);
 
-  useEffect(() => {
-    if (id) {
-      fetchSiteData(id);
-    }
-  }, [id]);
+  // useEffect(() => {
+  //   if (id) {
+  //     fetchSiteData(id);
+  //   }
+  // }, [id]);
 
-  const fetchSiteData = async (siteId: string) => {
-    try {
-      const siteRef = doc(db, "sites", siteId);
-      const siteSnap = await getDoc(siteRef);
-      if (siteSnap.exists()) {
-        setSite(siteSnap.data());
-      } else {
-        console.error("Site not found!");
-      }
-    } catch (error) {
-      console.error("Error fetching site data:", error);
-    }
-    setLoading(false);
-  };
+  // const fetchSiteData = async (siteId: string) => {
+  // try {
+  //   const siteRef = doc(db, "sites", siteId);
+  //   const siteSnap = await getDoc(siteRef);
+  //   if (siteSnap.exists()) {
+  //   } else {
+  //     console.error("Site not found!");
+  //   }
+  // } catch (error) {
+  //   console.error("Error fetching site data:", error);
+  // }
+  //   setLoading(false);
+  // };
 
   useEffect(() => {
     if (id) fetchMaterials();
@@ -153,7 +151,7 @@ export default function SiteDetailsPage() {
   };
 
   const sortMaterials = (option: string) => {
-    let sortedMaterials = [...materials];
+    const sortedMaterials = [...materials];
 
     if (option === "date") {
       sortedMaterials.sort(

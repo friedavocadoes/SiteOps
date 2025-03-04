@@ -1,48 +1,46 @@
-import { Card, CardHeader, CardContent, CardTitle } from ".//ui/card";
-import { Label } from "./ui/label";
-import { Clock } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
 
 type ProgressEntry = {
-  id: number;
-  siteId: number;
+  id: string;
+  siteId: string;
   date: string;
   materialName: string;
   manhours: number;
   expenses: number;
 };
 
+type ProgressListProps = {
+  progressEntries: ProgressEntry[];
+  onDeleteProgress: (id: string) => void;
+};
+
 export default function ProgressList({
   progressEntries,
-}: {
-  progressEntries: ProgressEntry[];
-}) {
+  onDeleteProgress,
+}: ProgressListProps) {
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-bold">Progress Overview</h2>
       {progressEntries.map((entry) => (
-        <Card key={entry.id}>
-          <CardHeader>
-            <div className="flex justify-between items-center">
-              <CardTitle>{entry.date}</CardTitle>
-              <div className="flex items-center space-x-2">
-                <Clock className="h-4 w-4" />
-                <span>{entry.manhours} hours</span>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label>Material</Label>
-                <p>{entry.materialName}</p>
-              </div>
-              <div>
-                <Label>Expenses</Label>
-                <p>${entry.expenses}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <div
+          key={entry.id}
+          className="p-4 border rounded-lg flex justify-between items-center"
+        >
+          <div>
+            <p className="font-semibold">{entry.materialName}</p>
+            <p className="text-sm">
+              Date: {entry.date} | Manhours: {entry.manhours} | Expenses: $
+              {entry.expenses}
+            </p>
+          </div>
+          <Button
+            onClick={() => onDeleteProgress(entry.id)}
+            variant="destructive"
+            size="icon"
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </div>
       ))}
     </div>
   );

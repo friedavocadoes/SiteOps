@@ -31,6 +31,12 @@ export default function Navbar() {
         <Link href="/support" className="hover:underline">
           Support
         </Link>
+
+        {user ? (
+          <Link href="/inventory" className="hover:underline">
+            Inventory
+          </Link>
+        ) : null}
       </div>
 
       {/* Right - Auth Button */}

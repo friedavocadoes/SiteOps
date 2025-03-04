@@ -66,7 +66,7 @@ export default function InventoryPage() {
     setNewMaterial({ name: "", quantity: "", price: "" });
   };
 
-  const handleDeleteMaterial = async (id: any) => {
+  const handleDeleteMaterial = async (id: string) => {
     if (confirm("Are you sure you want to delete this material?")) {
       await deleteDoc(doc(db, "inventory", id));
       setMaterials(materials.filter((material) => material.id !== id));

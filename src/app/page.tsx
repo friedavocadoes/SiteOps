@@ -25,12 +25,15 @@ import {
   doc,
 } from "firebase/firestore";
 import { Skeleton } from "../components/ui/skeleton";
+import { Site } from "@/types";
 
-type Site = {
-  id: string;
-  name: string;
-  location: string;
-};
+// Remove the local Site type definition
+// Delete or comment out:
+// type Site = {
+//   id: string;
+//   name: string;
+//   location: string;
+// };
 
 export default function Home() {
   const [sites, setSites] = useState<Site[]>([]);

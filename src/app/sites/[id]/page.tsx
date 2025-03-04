@@ -9,9 +9,7 @@ import {
   deleteDoc,
   doc,
   Timestamp,
-  getDoc,
 } from "firebase/firestore";
-import { useSearchParams } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -39,12 +37,6 @@ type InventoryItem = {
   name: string;
 };
 
-type Site = {
-  // Add your site properties here
-  name: string;
-  // ... other properties
-};
-
 export default function SiteDetailsPage() {
   const params = useParams();
   const id = typeof params.id === "string" ? params.id : params.id?.[0];
@@ -60,27 +52,6 @@ export default function SiteDetailsPage() {
     price: "",
     date: "",
   });
-  // const [site, setSite] = useState<Site | null>(null);
-
-  // useEffect(() => {
-  //   if (id) {
-  //     fetchSiteData(id);
-  //   }
-  // }, [id]);
-
-  // const fetchSiteData = async (siteId: string) => {
-  // try {
-  //   const siteRef = doc(db, "sites", siteId);
-  //   const siteSnap = await getDoc(siteRef);
-  //   if (siteSnap.exists()) {
-  //   } else {
-  //     console.error("Site not found!");
-  //   }
-  // } catch (error) {
-  //   console.error("Error fetching site data:", error);
-  // }
-  //   setLoading(false);
-  // };
 
   useEffect(() => {
     if (id) fetchMaterials();

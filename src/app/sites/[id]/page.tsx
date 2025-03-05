@@ -35,6 +35,7 @@ type Material = {
 type InventoryItem = {
   id: string;
   name: string;
+  quantity: number;
 };
 
 export default function SiteDetailsPage() {
@@ -52,6 +53,9 @@ export default function SiteDetailsPage() {
     price: "",
     date: "",
   });
+  const [quantityError, setQuantityError] = useState<string>("");
+  const [selectedInventoryItem, setSelectedInventoryItem] =
+    useState<InventoryItem | null>(null);
 
   useEffect(() => {
     if (id) fetchMaterials();
@@ -97,9 +101,25 @@ export default function SiteDetailsPage() {
     )
       return;
 
+    const selectedItem = inventory.find(
+      (item) => item.name === newMaterial.name
+    );
+    if (!selectedItem) {
+      setQuantityError("Material not found in inventory!");
+      return;
+    }
+
+    const requestedQuantity = Number(newMaterial.quantity);
+    if (requestedQuantity > selectedItem.quantity) {
+      setQuantityError(
+        `Exceeds available quantity (${selectedItem.quantity} units)`
+      );
+      return;
+    }
+
     const newMaterialData = {
       name: newMaterial.name,
-      quantity: Number(newMaterial.quantity),
+      quantity: requestedQuantity,
       price: Number(newMaterial.price),
       dateAdded: Timestamp.fromDate(new Date(newMaterial.date)),
     };
@@ -109,6 +129,14 @@ export default function SiteDetailsPage() {
       newMaterialData
     );
 
+    // Update inventory quantity
+    const updatedInventory = inventory.map((item) =>
+      item.id === selectedItem.id
+        ? { ...item, quantity: item.quantity - requestedQuantity }
+        : item
+    );
+
+    setInventory(updatedInventory);
     setMaterials([...materials, { id: docRef.id, ...newMaterialData }]);
     setNewMaterial({ name: "", quantity: "", price: "", date: "" });
   };
@@ -141,7 +169,7 @@ export default function SiteDetailsPage() {
     <>
       <Navbar />
       <div className="container mx-auto p-4">
-        <Card>
+        <Card className="px-12 pt-16">
           <CardHeader>
             <CardTitle>Site Materials Log</CardTitle>
           </CardHeader>
@@ -156,43 +184,80 @@ export default function SiteDetailsPage() {
               </Button>
             </div>
 
-            <div className="grid grid-cols-4 gap-4 mb-4">
+            <div className="grid grid-cols-4 gap-12 mb-4 mt-4">
               {/* Conditional Rendering: Show Inventory Dropdown OR Manual Input */}
-              {useInventory ? (
-                <Select
-                  onValueChange={(value) =>
-                    setNewMaterial({ ...newMaterial, name: value })
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select from Inventory" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {inventory.map((item) => (
-                      <SelectItem key={item.id} value={item.name}>
-                        {item.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              ) : (
-                <Input
-                  placeholder="Material Name"
-                  value={newMaterial.name}
-                  onChange={(e) =>
-                    setNewMaterial({ ...newMaterial, name: e.target.value })
-                  }
-                />
-              )}
 
-              <Input
-                placeholder="Quantity"
-                type="number"
-                value={newMaterial.quantity}
-                onChange={(e) =>
-                  setNewMaterial({ ...newMaterial, quantity: e.target.value })
-                }
-              />
+              <div>
+                {useInventory ? (
+                  <Select
+                    onValueChange={(value) => {
+                      const selected = inventory.find(
+                        (item) => item.name === value
+                      );
+                      setSelectedInventoryItem(selected || null);
+                      setNewMaterial({ ...newMaterial, name: value });
+                      setQuantityError(""); // Clear any existing errors
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select from Inventory" />
+                    </SelectTrigger>
+
+                    <SelectContent>
+                      {inventory.map((item) => (
+                        <SelectItem key={item.id} value={item.name}>
+                          {item.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <Input
+                    placeholder="Material Name"
+                    value={newMaterial.name}
+                    onChange={(e) =>
+                      setNewMaterial({ ...newMaterial, name: e.target.value })
+                    }
+                  />
+                )}
+                {selectedInventoryItem && (
+                  <p className="text-sm text-gray-500 ml-2 mt-2">
+                    Available: {selectedInventoryItem.quantity} units
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <Input
+                  placeholder="Quantity"
+                  type="number"
+                  value={newMaterial.quantity}
+                  onChange={(e) => {
+                    const requestedQuantity = Number(e.target.value);
+                    if (
+                      selectedInventoryItem &&
+                      requestedQuantity > selectedInventoryItem.quantity
+                    ) {
+                      setQuantityError(
+                        `Exceeds available quantity (${selectedInventoryItem.quantity} units)`
+                      );
+                    } else {
+                      setQuantityError("");
+                    }
+                    setNewMaterial({
+                      ...newMaterial,
+                      quantity: e.target.value,
+                    });
+                  }}
+                  className={quantityError ? "border-red-500" : ""}
+                />
+                {quantityError && (
+                  <div className="text-red-500 text-sm mt-1">
+                    {quantityError}
+                  </div>
+                )}
+              </div>
+
               <Input
                 placeholder="Price"
                 type="number"
@@ -209,9 +274,18 @@ export default function SiteDetailsPage() {
                 }
               />
             </div>
-            <Button onClick={handleAddMaterial} className="cursor-pointer">
+
+            <Button
+              onClick={handleAddMaterial}
+              className="cursor-pointer"
+              disabled={
+                useInventory &&
+                (!!quantityError || !newMaterial.quantity || !newMaterial.name)
+              }
+            >
               Log Material
             </Button>
+
             {/* Sort Dropdown */}
             <div className="mb-4 mt-12">
               <Select onValueChange={setSortOption} defaultValue="date">

@@ -141,7 +141,7 @@ export default function Home() {
                         onClick={() => handleDeleteSite(site.id)}
                         variant="destructive"
                         size="icon"
-                        className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>

@@ -32,11 +32,16 @@ export default function Navbar() {
           Support
         </Link>
 
-        {user ? (
+        {user && (
+          <Link href="/" className="hover:underline">
+            Dashboard
+          </Link>
+        )}
+        {user && (
           <Link href="/inventory" className="hover:underline">
             Inventory
           </Link>
-        ) : null}
+        )}
       </div>
 
       {/* Right - Auth Button */}

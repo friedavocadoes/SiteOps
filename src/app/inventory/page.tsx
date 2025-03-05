@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import Navbar from "@/components/Navbar";
+import { useRouter } from "next/navigation";
 
 type Material = {
   id: string;
@@ -24,6 +25,8 @@ type Material = {
 
 export default function InventoryPage() {
   const [materials, setMaterials] = useState<Material[]>([]);
+  const router = useRouter();
+
   const [loading, setLoading] = useState(true);
   const [newMaterial, setNewMaterial] = useState({
     name: "",
@@ -77,6 +80,13 @@ export default function InventoryPage() {
     <>
       <Navbar />
       <div className="container mx-auto p-4">
+        <Button
+          onClick={() => router.back()}
+          variant="outline"
+          className="mb-4 w-20 cursor-pointer"
+        >
+          ← Back
+        </Button>
         <Card>
           <CardHeader>
             <CardTitle>Inventory Management</CardTitle>

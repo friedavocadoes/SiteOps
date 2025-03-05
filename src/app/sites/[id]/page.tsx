@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/select";
 import Navbar from "@/components/Navbar";
 import { useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 type Material = {
   id: string;
@@ -41,6 +42,7 @@ type InventoryItem = {
 export default function SiteDetailsPage() {
   const params = useParams();
   const id = typeof params.id === "string" ? params.id : params.id?.[0];
+  const router = useRouter();
 
   const [materials, setMaterials] = useState<Material[]>([]);
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
@@ -168,7 +170,15 @@ export default function SiteDetailsPage() {
   return (
     <>
       <Navbar />
+
       <div className="container mx-auto p-4">
+        <Button
+          onClick={() => router.back()}
+          variant="outline"
+          className="mb-4 w-20 cursor-pointer"
+        >
+          ← Back
+        </Button>
         <Card className="px-12 pt-16">
           <CardHeader>
             <CardTitle>Site Materials Log</CardTitle>

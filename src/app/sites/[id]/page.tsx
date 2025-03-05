@@ -9,6 +9,7 @@ import {
   deleteDoc,
   doc,
   Timestamp,
+  updateDoc, // Add this import
 } from "firebase/firestore";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -100,55 +101,124 @@ export default function SiteDetailsPage() {
       !newMaterial.quantity ||
       !newMaterial.price ||
       !newMaterial.date
+    ) {
+      alert("Please fill in all fields");
+      return;
+    }
+
+    try {
+      if (useInventory) {
+        // Handle inventory-based addition
+        const selectedItem = inventory.find(
+          (item) => item.name === newMaterial.name
+        );
+        if (!selectedItem) {
+          setQuantityError("Material not found in inventory!");
+          return;
+        }
+
+        const requestedQuantity = Number(newMaterial.quantity);
+        if (requestedQuantity > selectedItem.quantity) {
+          setQuantityError(
+            `Exceeds available quantity (${selectedItem.quantity} units)`
+          );
+          return;
+        }
+
+        const newMaterialData = {
+          name: newMaterial.name,
+          quantity: requestedQuantity,
+          price: Number(newMaterial.price),
+          dateAdded: Timestamp.fromDate(new Date(newMaterial.date)),
+        };
+
+        // First, add the new material
+        const docRef = await addDoc(
+          collection(db, `sites/${id}/materials`),
+          newMaterialData
+        );
+
+        // Then update the inventory in Firestore
+        await updateDoc(doc(db, "inventory", selectedItem.id), {
+          quantity: selectedItem.quantity - requestedQuantity,
+        });
+
+        // Finally update local state
+        const updatedInventory = inventory.map((item) =>
+          item.id === selectedItem.id
+            ? { ...item, quantity: item.quantity - requestedQuantity }
+            : item
+        );
+        setInventory(updatedInventory);
+        setMaterials([...materials, { id: docRef.id, ...newMaterialData }]);
+      } else {
+        // Handle manual addition
+        const newMaterialData = {
+          name: newMaterial.name,
+          quantity: Number(newMaterial.quantity),
+          price: Number(newMaterial.price),
+          dateAdded: Timestamp.fromDate(new Date(newMaterial.date)),
+        };
+
+        const docRef = await addDoc(
+          collection(db, `sites/${id}/materials`),
+          newMaterialData
+        );
+        setMaterials([...materials, { id: docRef.id, ...newMaterialData }]);
+      }
+
+      // Reset form in both cases
+      setNewMaterial({ name: "", quantity: "", price: "", date: "" });
+      setQuantityError("");
+    } catch (error) {
+      console.error("Error adding material:", error);
+      alert("Failed to add material. Please try again.");
+    }
+  };
+
+  const handleDeleteMaterial = async (materialId: string) => {
+    if (
+      !id ||
+      !materialId ||
+      !confirm("Are you sure you want to delete this material?")
     )
       return;
 
-    const selectedItem = inventory.find(
-      (item) => item.name === newMaterial.name
-    );
-    if (!selectedItem) {
-      setQuantityError("Material not found in inventory!");
-      return;
+    try {
+      // First get the material details before deletion
+      const materialToDelete = materials.find((m) => m.id === materialId);
+
+      if (useInventory && materialToDelete) {
+        // Find the corresponding inventory item
+        const inventoryItem = inventory.find(
+          (item) => item.name === materialToDelete.name
+        );
+
+        if (inventoryItem) {
+          // Update inventory quantity in Firestore
+          await updateDoc(doc(db, "inventory", inventoryItem.id), {
+            quantity: inventoryItem.quantity + materialToDelete.quantity,
+          });
+
+          // Update local inventory state
+          const updatedInventory = inventory.map((item) =>
+            item.id === inventoryItem.id
+              ? { ...item, quantity: item.quantity + materialToDelete.quantity }
+              : item
+          );
+          setInventory(updatedInventory);
+        }
+      }
+
+      // Delete the material from Firestore
+      await deleteDoc(doc(db, `sites/${id}/materials`, materialId));
+
+      // Update local materials state
+      setMaterials(materials.filter((material) => material.id !== materialId));
+    } catch (error) {
+      console.error("Error deleting material:", error);
+      alert("Failed to delete material. Please try again.");
     }
-
-    const requestedQuantity = Number(newMaterial.quantity);
-    if (requestedQuantity > selectedItem.quantity) {
-      setQuantityError(
-        `Exceeds available quantity (${selectedItem.quantity} units)`
-      );
-      return;
-    }
-
-    const newMaterialData = {
-      name: newMaterial.name,
-      quantity: requestedQuantity,
-      price: Number(newMaterial.price),
-      dateAdded: Timestamp.fromDate(new Date(newMaterial.date)),
-    };
-
-    const docRef = await addDoc(
-      collection(db, `sites/${id}/materials`),
-      newMaterialData
-    );
-
-    // Update inventory quantity
-    const updatedInventory = inventory.map((item) =>
-      item.id === selectedItem.id
-        ? { ...item, quantity: item.quantity - requestedQuantity }
-        : item
-    );
-
-    setInventory(updatedInventory);
-    setMaterials([...materials, { id: docRef.id, ...newMaterialData }]);
-    setNewMaterial({ name: "", quantity: "", price: "", date: "" });
-  };
-
-  const handleDeleteMaterial = async (id: string) => {
-    if (!id || !confirm("Are you sure you want to delete this material?"))
-      return;
-
-    await deleteDoc(doc(db, `sites/${id}/materials`, id));
-    setMaterials(materials.filter((material) => material.id !== id));
   };
 
   const sortMaterials = (option: string) => {
@@ -289,8 +359,14 @@ export default function SiteDetailsPage() {
               onClick={handleAddMaterial}
               className="cursor-pointer"
               disabled={
-                useInventory &&
-                (!!quantityError || !newMaterial.quantity || !newMaterial.name)
+                useInventory
+                  ? !!quantityError ||
+                    !newMaterial.quantity ||
+                    !newMaterial.name
+                  : !newMaterial.name ||
+                    !newMaterial.quantity ||
+                    !newMaterial.price ||
+                    !newMaterial.date
               }
             >
               Log Material

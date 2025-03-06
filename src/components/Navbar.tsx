@@ -72,11 +72,11 @@ export default function Navbar() {
             <Menu size={24} />
           </button>
         </SheetTrigger>
-        <SheetContent side="left" className="bg-black text-white">
+        <SheetContent side="right" className="bg-black text-white px-4 pt-10">
           <div className="flex flex-col gap-4 p-4">
             <Link
               href="/"
-              className="text-xl font-bold"
+              className="text-xl font-bold mb-10"
               onClick={() => setIsOpen(false)}
             >
               SiteOps
@@ -107,7 +107,7 @@ export default function Navbar() {
                 </Link>
                 <Link
                   href="/inventory"
-                  className="hover:underline"
+                  className="hover:underline mb-10"
                   onClick={() => setIsOpen(false)}
                 >
                   Inventory

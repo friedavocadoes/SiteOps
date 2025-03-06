@@ -13,9 +13,9 @@ A brief description of your project, what it does, and why it exists.
 
 ### Prerequisites
 Before setting up the project, ensure you have:
-- **Node.js** (Latest LTS recommended)
-- **Git** (for version control)
-- **Firebase Account** (for backend services)
+- [**Node.js**](https://nodejs.org/en) (Latest LTS recommended)
+- [**Git**](https://git-scm.com/downloads) (optional-for version control)
+- [**Firebase Account**](https://firebase.google.com/) (for backend services)
 
 ### 1️⃣ Clone the Repository
 ```sh

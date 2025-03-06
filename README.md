@@ -1,36 +1,95 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Project Name
 
-## Getting Started
+A brief description of your project, what it does, and why it exists.
 
-First, run the development server:
+## 🚀 Features
+- [x] Built with **Next.js** for modern, fast web applications.
+- [x] **Firebase** for authentication, database, and storage.
+- [x] **ShadCN** for beautiful, accessible UI components.
+- [x] Secure authentication and role-based access.
+- [x] Responsive and user-friendly design.
 
-```bash
-npm run dev
+## 🛠️ Setup & Installation
+
+### Prerequisites
+Before setting up the project, ensure you have:
+- **Node.js** (Latest LTS recommended)
+- **Git** (for version control)
+- **Firebase Account** (for backend services)
+
+### 1️⃣ Clone the Repository
+```sh
+git clone https://github.com/friedavocadoes/SiteOps.git
+cd SiteOps
+```
+>![NOTE]
+>You may have to change the directory name to `siteops` since NextJS has dropped support for UpperCase directory names.
+
+### 2️⃣ Install Dependencies
+```sh
+yarn install
 # or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 3️⃣ Configure Environment Variables
+Create a `.env.local` file in the root directory and add the following:
+```env
+NEXT_PUBLIC_FIREBASE_API_KEY=your-api-key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your-auth-domain
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your-project-id
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your-storage-bucket
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your-messaging-sender-id
+NEXT_PUBLIC_FIREBASE_APP_ID=your-app-id
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 4️⃣ Set Up Firebase
+1. Go to [Firebase Console](https://console.firebase.google.com/).
+2. Create a new project.
+3. Add a web app and copy the config to `.env.local`.
+4. Enable Authentication (Google, Email/Password, etc.).
+5. Set up Firestore Database (if used).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 5️⃣ Run the Development Server
+```sh
+yarn dev
+# or
+npm run dev
+```
+Your app will be live at `http://localhost:3000`.
 
-## Learn More
+## 🎨 UI with ShadCN
+This project uses **ShadCN** for UI components.
 
-To learn more about Next.js, take a look at the following resources:
+To install new components, use:
+```sh
+npx shadcn-ui add component-name
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+See the full list of components at [shadcn/ui](https://ui.shadcn.com/).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📜 Documentation
+To generate and serve documentation:
+1. Use **JSDoc** or **Docz** for auto-generated docs.
+2. Store documentation inside the `docs/` folder.
+3. Deploy using GitHub Pages, Vercel, or another platform.
 
-## Deploy on Vercel
+### Generate Documentation
+For JSDoc:
+```sh
+yarn global add jsdoc
+jsdoc -c jsdoc.json
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+### 🤝 Contributing
+Pull requests are welcome! For major changes, please open an issue first.
+
+### 📄 License
+This project is licensed under the MIT License.
+
+---
+
+💡 **Happy Coding!** 🎉

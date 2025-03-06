@@ -36,7 +36,7 @@ export default function SupportPage() {
               </a>
             </div>
             <div className="mb-4">
-              <strong>Phone:</strong> +91 9207757005
+              <strong>Phone:</strong> +91 xxxxxxxx
             </div>
             <div className="mb-4">
               <strong>Working Hours:</strong> Monday - Friday, 5:00 PM - 10:00

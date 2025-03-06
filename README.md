@@ -22,7 +22,7 @@ Before setting up the project, ensure you have:
 git clone https://github.com/friedavocadoes/SiteOps.git
 cd SiteOps
 ```
->![NOTE]
+>[!NOTE]
 >You may have to change the directory name to `siteops` since NextJS has dropped support for UpperCase directory names.
 
 ### 2️⃣ Install Dependencies

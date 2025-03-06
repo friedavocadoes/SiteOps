@@ -1,6 +1,6 @@
-# Project Name
+# SiteOps
 
-A brief description of your project, what it does, and why it exists.
+The Material Logger & Tracker with Inventory support for Builders.
 
 ## Features
 - Built with **Next.js 13** 

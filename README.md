@@ -2,14 +2,14 @@
 
 A brief description of your project, what it does, and why it exists.
 
-## 🚀 Features
+## Features
 - [x] Built with **Next.js** for modern, fast web applications.
 - [x] **Firebase** for authentication, database, and storage.
 - [x] **ShadCN** for beautiful, accessible UI components.
 - [x] Secure authentication and role-based access.
 - [x] Responsive and user-friendly design.
 
-## 🛠️ Setup & Installation
+## Setup & Installation
 
 ### Prerequisites
 Before setting up the project, ensure you have:
@@ -58,7 +58,7 @@ npm run dev
 ```
 Your app will be live at `http://localhost:3000`.
 
-## 🎨 UI with ShadCN
+## UI with ShadCN
 This project uses **ShadCN** for UI components.
 
 To install new components, use:
@@ -84,12 +84,11 @@ jsdoc -c jsdoc.json
 
 ---
 
-### 🤝 Contributing
+### Contributing
 Pull requests are welcome! For major changes, please open an issue first.
 
-### 📄 License
+### License
 This project is licensed under the MIT License.
 
 ---
 
-💡 **Happy Coding!** 🎉

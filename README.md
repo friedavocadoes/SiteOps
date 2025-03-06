@@ -3,11 +3,11 @@
 A brief description of your project, what it does, and why it exists.
 
 ## Features
-- [x] Built with **Next.js** for modern, fast web applications.
-- [x] **Firebase** for authentication, database, and storage.
-- [x] **ShadCN** for beautiful, accessible UI components.
-- [x] Secure authentication and role-based access.
-- [x] Responsive and user-friendly design.
+- Built with **Next.js 13** 
+- **Firebase** for authentication, database, and storage.
+- **ShadCN** for beautiful, accessible UI components.
+- Secure authentication and role-based access.
+- Responsive and user-friendly design.
 
 ## Setup & Installation
 

@@ -68,19 +68,6 @@ npx shadcn-ui add component-name
 
 See the full list of components at [shadcn/ui](https://ui.shadcn.com/).
 
-## 📜 Documentation
-To generate and serve documentation:
-1. Use **JSDoc** or **Docz** for auto-generated docs.
-2. Store documentation inside the `docs/` folder.
-3. Deploy using GitHub Pages, Vercel, or another platform.
-
-### Generate Documentation
-For JSDoc:
-```sh
-yarn global add jsdoc
-jsdoc -c jsdoc.json
-```
-
 
 ---
 

@@ -21,7 +21,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="flex items-center justify-between p-4 px-6 bg-black text-white shadow-md">
+    <nav className="flex items-center justify-between p-4 px-6 md:px-36 bg-black text-white shadow-md">
       {/* Left - Logo */}
       <Link
         href={user ? "/" : "/home"}

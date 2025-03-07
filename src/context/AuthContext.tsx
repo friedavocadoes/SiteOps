@@ -6,13 +6,26 @@ import {
   signOut,
   onAuthStateChanged,
   GoogleAuthProvider,
+  GithubAuthProvider,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
   UserCredential,
+  sendPasswordResetEmail as firebaseSendPasswordResetEmail,
+  sendEmailVerification as firebaseSendEmailVerification, // Import sendEmailVerification
 } from "firebase/auth";
 import { auth } from "../app/firebase/config";
 
 interface AuthContextType {
   user: User | null;
-  login: () => Promise<UserCredential>;
+  loginWithGoogle: () => Promise<UserCredential>;
+  loginWithGitHub: () => Promise<UserCredential>;
+  loginWithEmail: (email: string, password: string) => Promise<UserCredential>;
+  registerWithEmail: (
+    email: string,
+    password: string
+  ) => Promise<UserCredential>;
+  sendPasswordResetEmail: (email: string) => Promise<void>;
+  sendEmailVerification: () => Promise<void>; // Add sendEmailVerification
   logout: () => Promise<void>;
 }
 
@@ -29,15 +42,45 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return () => unsubscribe();
   }, []);
 
-  const login = async (): Promise<UserCredential> => {
-    try {
-      const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(auth, provider);
-      return result; // Return the UserCredential
-    } catch (error) {
-      console.error("Login error:", error);
-      throw error;
+  // Google Login
+  const loginWithGoogle = async (): Promise<UserCredential> => {
+    const provider = new GoogleAuthProvider();
+    return signInWithPopup(auth, provider);
+  };
+
+  // GitHub Login
+  const loginWithGitHub = async (): Promise<UserCredential> => {
+    const provider = new GithubAuthProvider();
+    return signInWithPopup(auth, provider);
+  };
+
+  // Email/Password Login
+  const loginWithEmail = async (
+    email: string,
+    password: string
+  ): Promise<UserCredential> => {
+    return signInWithEmailAndPassword(auth, email, password);
+  };
+
+  // Email/Password Registration
+  const registerWithEmail = async (
+    email: string,
+    password: string
+  ): Promise<UserCredential> => {
+    return createUserWithEmailAndPassword(auth, email, password);
+  };
+
+  // Send Password Reset Email
+  const sendPasswordResetEmail = async (email: string): Promise<void> => {
+    return firebaseSendPasswordResetEmail(auth, email);
+  };
+
+  // Send Email Verification
+  const sendEmailVerification = async (): Promise<void> => {
+    if (auth.currentUser) {
+      return firebaseSendEmailVerification(auth.currentUser);
     }
+    throw new Error("No user is currently signed in.");
   };
 
   const logout = async () => {
@@ -45,7 +88,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        loginWithGoogle,
+        loginWithGitHub,
+        loginWithEmail,
+        registerWithEmail,
+        sendPasswordResetEmail,
+        sendEmailVerification,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

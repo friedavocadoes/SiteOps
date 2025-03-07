@@ -5,64 +5,59 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Navbar from "@/components/Navbar";
-import { db } from "../firebase/config";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-// import { UserCredential } from "firebase/auth";
-
-type UserData = {
-  email: string | null;
-  name: string | null;
-  sites: {
-    [siteId: string]: {
-      role: "owner" | "member";
-      permissions?: {
-        addLogs: boolean;
-        editInventory: boolean;
-        deleteLogs: boolean;
-      };
-    };
-  };
-  createdAt: string;
-};
+import Link from "next/link";
+import { FirebaseError } from "firebase/app";
 
 export default function LoginPage() {
-  const { user, login } = useAuth();
+  const {
+    user,
+    loginWithGoogle,
+    loginWithGitHub,
+    loginWithEmail,
+    registerWithEmail,
+    sendEmailVerification,
+  } = useAuth();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  useEffect(() => {
-    if (user) router.push("/");
-  }, [user, router]);
+  if (user) {
+    router.push("/");
+    return null;
+  }
 
-  const handleLogin = async () => {
+  const handleLoginOrRegister = async () => {
     try {
       setLoading(true);
       setError(null);
-      const userCredential = await login(); // Remove the type assertion, it's handled by AuthContext
 
-      if (userCredential.user?.email) {
-        const userRef = doc(db, "users", userCredential.user.email);
-        const userDoc = await getDoc(userRef);
+      await loginWithEmail(email, password);
+      router.push("/");
+    } catch (error) {
+      const firebaseError = error as FirebaseError;
 
-        if (!userDoc.exists()) {
-          const userData: UserData = {
-            email: userCredential.user.email,
-            name: userCredential.user.displayName,
-            sites: {},
-            createdAt: new Date().toISOString(),
-          };
-
-          await setDoc(userRef, userData);
+      if (firebaseError.code.includes("auth/invalid-credential")) {
+        const confirmRegister = confirm(
+          "User not found. Do you want to create an account?"
+        );
+        if (confirmRegister) {
+          try {
+            await registerWithEmail(email, password);
+            // await sendEmailVerification();
+            // alert(
+            //   "A verification email has been sent. Please verify before logging in."
+            // );
+          } catch (regError) {
+            setError("Failed to register. Please try again.");
+          }
         }
       } else {
-        throw new Error("Failed to get user email");
+        setError("Login failed. Please check your credentials.");
       }
-    } catch (error) {
-      console.error("Login error:", error);
-      setError(error instanceof Error ? error.message : "Failed to login");
     } finally {
       setLoading(false);
     }
@@ -78,7 +73,7 @@ export default function LoginPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <Button
-              onClick={handleLogin}
+              onClick={() => loginWithGoogle()}
               disabled={loading}
               className="w-full cursor-pointer"
             >
@@ -88,7 +83,61 @@ export default function LoginPage() {
                 "Sign in with Google"
               )}
             </Button>
+            {/* <Button
+              onClick={() => loginWithGitHub()}
+              disabled={loading}
+              className="w-full"
+            >
+              {loading ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                "Sign in with GitHub"
+              )}
+            </Button> */}
+
+            <div className="relative flex items-center justify-center py-2">
+              <div className="w-full border-b border-gray-600"></div>
+              <span className="absolute px-2 bg-black text-gray-400">OR</span>
+            </div>
+
+            <div className="space-y-2">
+              <input
+                type="email"
+                placeholder="Email"
+                className="w-full px-4 py-2 bg-gray-800 text-white rounded"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <input
+                type="password"
+                placeholder="Password"
+                className="w-full px-4 py-2 bg-gray-800 text-white rounded"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <Button
+                onClick={handleLoginOrRegister}
+                disabled={loading}
+                className="w-full cursor-pointer"
+              >
+                {loading ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  "Login / Register"
+                )}
+              </Button>
+            </div>
+
             {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+
+            <div className="space-y-2">
+              <Link
+                href="/login/forgot-password"
+                className="text-blue-500 hover:underline"
+              >
+                Forgot Password?
+              </Link>
+            </div>
           </CardContent>
         </Card>
       </div>

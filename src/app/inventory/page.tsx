@@ -11,7 +11,13 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -19,6 +25,8 @@ import Navbar from "@/components/Navbar";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext"; // Import useAuth
 import Footer from "@/components/Footer";
+import { Loader2, Trash2 } from "lucide-react";
+import { Label } from "@radix-ui/react-label";
 
 type Material = {
   id: string;
@@ -33,6 +41,8 @@ export default function InventoryPage() {
   const router = useRouter();
 
   const [loading, setLoading] = useState(true);
+  const [createLoading, setCreateLoading] = useState(false);
+
   const [newMaterial, setNewMaterial] = useState({
     name: "",
     quantity: "",
@@ -69,6 +79,7 @@ export default function InventoryPage() {
   const handleAddMaterial = async () => {
     if (!newMaterial.name || !newMaterial.quantity || !newMaterial.price)
       return;
+    setCreateLoading(true);
 
     const newMaterialData = {
       name: newMaterial.name,
@@ -81,6 +92,7 @@ export default function InventoryPage() {
 
     setMaterials([...materials, { id: docRef.id, ...newMaterialData }]);
     setNewMaterial({ name: "", quantity: "", price: "" });
+    setCreateLoading(false);
   };
 
   const handleDeleteMaterial = async (id: string) => {
@@ -93,7 +105,7 @@ export default function InventoryPage() {
   return (
     <>
       <Navbar />
-      <div className="container mx-auto p-4">
+      <div className="container mx-auto p-4 md:p-10 md:px-20">
         <Button
           onClick={() => router.back()}
           variant="outline"
@@ -101,13 +113,19 @@ export default function InventoryPage() {
         >
           ← Back
         </Button>
-        <Card>
+        <Card className="p-4 py-10 md:p-10 md:py-15">
           <CardHeader>
-            <CardTitle>Inventory Management</CardTitle>
+            <CardTitle className="text-xl font-bold">
+              Inventory Management
+            </CardTitle>
+            <CardDescription>Manage your inventory items here.</CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-3 gap-4 mb-4">
+
+          <CardContent className="flex flex-col">
+            <Label className="text-lg font-bold mb-2">Add New Material</Label>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
               <Input
+                className="h-12"
                 placeholder="Material Name"
                 value={newMaterial.name}
                 onChange={(e) =>
@@ -115,6 +133,7 @@ export default function InventoryPage() {
                 }
               />
               <Input
+                className="h-12"
                 placeholder="Quantity"
                 type="number"
                 value={newMaterial.quantity}
@@ -123,6 +142,7 @@ export default function InventoryPage() {
                 }
               />
               <Input
+                className="h-12"
                 placeholder="Price"
                 type="number"
                 value={newMaterial.price}
@@ -131,25 +151,36 @@ export default function InventoryPage() {
                 }
               />
             </div>
-            <Button onClick={handleAddMaterial}>Add Material</Button>
-            <div className="mt-4">
+            <Button
+              onClick={handleAddMaterial}
+              className="w-full md:w-1/2 mx-auto mt-2 cursor-pointer h-12 bg-green-900"
+            >
+              {createLoading ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                <>Add Material</>
+              )}
+            </Button>
+            <div className="mt-10">
+              <Label className="text-lg font-bold">Inventory Items</Label>
               {loading ? (
                 <Skeleton className="h-10 w-full" />
               ) : (
                 materials.map((material) => (
                   <div
                     key={material.id}
-                    className="flex justify-between items-center p-2 border rounded mt-2"
+                    className="flex justify-between items-center p-2 border rounded mt-2 md:px-6 md:py-4"
                   >
-                    <span>
+                    <span className="text-sm md:text-lg ml-3">
                       {material.name} - {material.quantity} units - $
                       {material.price}
                     </span>
                     <Button
+                      className="cursor-pointer rounded-sm"
                       variant="destructive"
                       onClick={() => handleDeleteMaterial(material.id)}
                     >
-                      Delete
+                      <Trash2 />
                     </Button>
                   </div>
                 ))

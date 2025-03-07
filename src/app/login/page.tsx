@@ -5,11 +5,13 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Link from "next/link";
 import { FirebaseError } from "firebase/app";
 import Footer from "@/components/Footer";
+// import withAuth from "@/components/withAuth";
+
 export default function LoginPage() {
   const {
     user,
@@ -25,10 +27,11 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  if (user) {
-    router.push("/");
-    return null;
-  }
+  useEffect(() => {
+    if (user) {
+      router.push("/");
+    }
+  });
 
   const handleLoginOrRegister = async () => {
     try {
@@ -146,3 +149,5 @@ export default function LoginPage() {
     </>
   );
 }
+
+// export default withAuth(LoginPage);

@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from "./ui/select";
 import { InventoryItem } from "@/types";
+import { Loader2 } from "lucide-react";
 
 interface MaterialsFormProps {
   useInventory: boolean;
@@ -32,9 +33,11 @@ export function MaterialsForm({
     date: new Date().toISOString().split("T")[0],
   });
   const [quantityError, setQuantityError] = useState("");
+  const [createLoading, setCreateLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setCreateLoading(true);
     if (useInventory) {
       const selectedItem = inventory.find(
         (item) => item.name === newMaterial.name
@@ -58,6 +61,7 @@ export function MaterialsForm({
       date: new Date().toISOString().split("T")[0],
     });
     setQuantityError("");
+    setCreateLoading(false);
   };
 
   return (
@@ -151,7 +155,11 @@ export function MaterialsForm({
       </div>
 
       <Button type="submit" className="w-full lg:w-auto cursor-pointer">
-        Add Material
+        {createLoading ? (
+          <Loader2 className="animate-spin" />
+        ) : (
+          <>Add Material</>
+        )}
       </Button>
     </form>
   );

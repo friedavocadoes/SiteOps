@@ -10,12 +10,11 @@ import {
   CardTitle,
   CardDescription,
 } from "../components/ui/card";
-import { Plus, Trash2 } from "lucide-react";
+import { Loader2, Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
 import SiteCard from "../components/SiteCard";
 import Navbar from "../components/Navbar";
 import { useAuth } from "@/context/AuthContext";
-import { useRouter } from "next/navigation";
 import { db } from "@/app/firebase/config";
 import {
   collection,
@@ -30,18 +29,17 @@ import {
 import { Skeleton } from "../components/ui/skeleton";
 import { Site } from "@/types";
 import Footer from "@/components/Footer";
+import withAuth from "@/components/withAuth";
 
-export default function Home() {
+function Home() {
   const [sites, setSites] = useState<Site[]>([]);
   const [newSite, setNewSite] = useState({ name: "", location: "" });
   const { user } = useAuth();
-  const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const [createLoading, setCreateLoading] = useState(false);
 
   useEffect(() => {
-    if (!user) {
-      router.push("/home");
-    } else {
+    if (user) {
       fetchSites();
     }
   }, [user]);
@@ -65,6 +63,7 @@ export default function Home() {
   // Add site to Firestore with userId
   const handleCreateSite = async () => {
     if (!newSite.name || !newSite.location || !user?.email) return;
+    setCreateLoading(true);
 
     try {
       // Create site document
@@ -95,6 +94,7 @@ export default function Home() {
       console.error("Error creating site:", error);
       alert("Failed to create site. Please try again.");
     }
+    setCreateLoading(false);
   };
 
   // Delete site from Firestore
@@ -111,18 +111,19 @@ export default function Home() {
   return (
     <>
       <Navbar />
-      <div className="container mx-auto p-4 px-12 pt-8 space-y-8">
-        <Card>
-          <CardHeader>
+      <div className="container mx-auto p-4 lg:px-56 my-15 pt-8 space-y-8">
+        <Card className="lg:px-36 py-12 md:py-16">
+          <CardHeader className="justify-center text-center mb-8">
             <CardTitle>Site Management</CardTitle>
             <CardDescription>Create and manage your sites</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-4 flex flex-col">
             {/* Site Creation Form */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
               <div className="space-y-2">
-                <Label>Site Name</Label>
+                <Label className="ml-2 mb-2">Site Name</Label>
                 <Input
+                  className="h-12"
                   value={newSite.name}
                   onChange={(e) =>
                     setNewSite({ ...newSite, name: e.target.value })
@@ -131,8 +132,9 @@ export default function Home() {
                 />
               </div>
               <div className="space-y-2">
-                <Label>Location</Label>
+                <Label className="ml-2 mb-2">Location</Label>
                 <Input
+                  className="h-12"
                   value={newSite.location}
                   onChange={(e) =>
                     setNewSite({ ...newSite, location: e.target.value })
@@ -141,12 +143,20 @@ export default function Home() {
                 />
               </div>
             </div>
-            <Button onClick={handleCreateSite} className="cursor-pointer">
-              <Plus className="mr-2 h-4 w-4" />
+            <Button
+              onClick={handleCreateSite}
+              className="cursor-pointer mb-12 mx-auto w-36 h-10"
+            >
+              {createLoading ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                <Plus className="mr-2 h-4 w-4" />
+              )}
               Create Site
             </Button>
 
             {/* Site List */}
+            <CardTitle className="text-center text-lg">Sites</CardTitle>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {loading
                 ? Array(3)
@@ -167,7 +177,7 @@ export default function Home() {
                         onClick={() => handleDeleteSite(site.id)}
                         variant="destructive"
                         size="icon"
-                        className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                        className="absolute top-3 right-3 rounded-sm cursor-pointer"
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -181,3 +191,5 @@ export default function Home() {
     </>
   );
 }
+
+export default withAuth(Home);

@@ -118,7 +118,7 @@ export default function Home() {
           </CardHeader>
           <CardContent className="space-y-4">
             {/* Site Creation Form */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Site Name</Label>
                 <Input
@@ -140,7 +140,7 @@ export default function Home() {
                 />
               </div>
             </div>
-            <Button onClick={handleCreateSite}>
+            <Button onClick={handleCreateSite} className="cursor-pointer">
               <Plus className="mr-2 h-4 w-4" />
               Create Site
             </Button>

@@ -34,7 +34,7 @@ export default function HomePage() {
               className="px-10 py-6 text-lg w-full bg-black sm:w-auto"
               variant="outline"
             >
-              <Link href={user ? "/dashboard" : "/login"}>Get Started</Link>
+              <Link href={user ? "/" : "/login"}>Get Started</Link>
             </Button>
             <Button
               variant="outline"

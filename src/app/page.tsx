@@ -22,18 +22,13 @@ import {
   addDoc,
   getDocs,
   deleteDoc,
+  query,
+  where,
   doc,
+  updateDoc,
 } from "firebase/firestore";
 import { Skeleton } from "../components/ui/skeleton";
 import { Site } from "@/types";
-
-// Remove the local Site type definition
-// Delete or comment out:
-// type Site = {
-//   id: string;
-//   name: string;
-//   location: string;
-// };
 
 export default function Home() {
   const [sites, setSites] = useState<Site[]>([]);
@@ -50,25 +45,55 @@ export default function Home() {
     }
   }, [user, router]);
 
-  // Fetch sites from Firestore
+  // Fetch sites specific to the logged-in user
   const fetchSites = async () => {
+    if (!user) return;
+
     setLoading(true);
-    const querySnapshot = await getDocs(collection(db, "sites"));
+    const q = query(collection(db, "sites"), where("userId", "==", user.uid));
+    const querySnapshot = await getDocs(q);
     const sitesList = querySnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
     })) as Site[];
+
     setSites(sitesList);
     setLoading(false);
   };
 
-  // Add site to Firestore
+  // Add site to Firestore with userId
   const handleCreateSite = async () => {
-    if (!newSite.name || !newSite.location) return;
+    if (!newSite.name || !newSite.location || !user?.email) return;
 
-    const docRef = await addDoc(collection(db, "sites"), newSite);
-    setSites([...sites, { id: docRef.id, ...newSite }]);
-    setNewSite({ name: "", location: "" });
+    try {
+      // Create site document
+      const siteData = {
+        ...newSite,
+        userId: user.uid,
+        createdAt: new Date().toISOString(),
+      };
+
+      const docRef = await addDoc(collection(db, "sites"), siteData);
+
+      // Update user's sites collection
+      const userRef = doc(db, "users", user.email);
+      await updateDoc(userRef, {
+        [`sites.${docRef.id}`]: {
+          role: "owner",
+          permissions: {
+            addLogs: true,
+            editInventory: true,
+            deleteLogs: true,
+          },
+        },
+      });
+
+      setSites([...sites, { id: docRef.id, ...siteData }]);
+      setNewSite({ name: "", location: "" });
+    } catch (error) {
+      console.error("Error creating site:", error);
+      alert("Failed to create site. Please try again.");
+    }
   };
 
   // Delete site from Firestore
@@ -78,7 +103,7 @@ export default function Home() {
     );
     if (confirmDelete) {
       await deleteDoc(doc(db, "sites", siteId));
-      setSites(sites.filter((site) => site.id !== siteId)); // Update UI after deletion
+      setSites(sites.filter((site) => site.id !== siteId));
     }
   };
 

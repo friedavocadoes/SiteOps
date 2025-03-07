@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useAuth } from "@/context/AuthContext";
 import { AddUserDialog } from "@/components/AddUserDialog";
 import { MaterialsForm } from "@/components/MaterialsForm";
 import { MaterialsList } from "@/components/MaterialsList";
@@ -12,15 +13,19 @@ import { useMaterials } from "@/hooks/useMaterials";
 import { useSiteUsers } from "@/hooks/useSiteUsers";
 import { useInventory } from "@/hooks/useInventory";
 import { SiteUser } from "@/types";
-import { doc, updateDoc } from "firebase/firestore"; // Add this import
+import { doc, updateDoc } from "firebase/firestore";
 import { db } from "@/app/firebase/config";
 
 export default function SiteDetailsPage() {
+  const { user } = useAuth();
   const params = useParams();
   const router = useRouter();
   const id = typeof params.id === "string" ? params.id : params.id?.[0];
 
-  // Ensure hooks are called unconditionally
+  if (!id) {
+    return <div>Error: Site ID is required</div>;
+  }
+
   const [showAddUser, setShowAddUser] = useState(false);
   const [userError, setUserError] = useState<string | null>(null);
   const [useInventoryState, setUseInventoryState] = useState(false);
@@ -29,11 +34,11 @@ export default function SiteDetailsPage() {
     id || ""
   );
   const { addUser } = useSiteUsers(id || "");
-  const { inventory, updateInventoryQuantity } = useInventory();
-
-  if (!id) {
-    return <div>Error: Site ID is required</div>;
-  }
+  const {
+    inventory,
+    loading: inventoryLoading,
+    updateInventoryQuantity,
+  } = useInventory(user?.uid || "");
 
   const handleAddUser = async (userData: Omit<SiteUser, "id">) => {
     try {

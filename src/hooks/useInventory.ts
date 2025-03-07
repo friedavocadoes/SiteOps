@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { db } from "@/app/firebase/config";
-import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { collection, getDocs, query, where, doc, updateDoc } from "firebase/firestore";
 import { InventoryItem } from "@/types";
 
-export function useInventory() {
+export function useInventory(userId: string) {
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -11,7 +11,7 @@ export function useInventory() {
   const fetchInventory = async () => {
     try {
       setLoading(true);
-      const q = query(collection(db, "inventory"), orderBy("name"));
+      const q = query(collection(db, "inventory"), where("users", "array-contains", userId));
       const querySnapshot = await getDocs(q);
       
       const inventoryData = querySnapshot.docs.map((doc) => ({
@@ -31,6 +31,9 @@ export function useInventory() {
 
   const updateInventoryQuantity = async (itemId: string, newQuantity: number) => {
     try {
+      await updateDoc(doc(db, "inventory", itemId), {
+        quantity: newQuantity,
+      });
       setInventory((prev) =>
         prev.map((item) =>
           item.id === itemId ? { ...item, quantity: newQuantity } : item
@@ -43,8 +46,10 @@ export function useInventory() {
   };
 
   useEffect(() => {
-    fetchInventory();
-  }, []);
+    if (userId) {
+      fetchInventory();
+    }
+  }, [userId]);
 
   return {
     inventory,

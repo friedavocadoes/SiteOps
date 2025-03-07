@@ -6,7 +6,12 @@ import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import { FaTools, FaClipboardList, FaUsers } from "react-icons/fa";
-
+import { ReactNode } from "react";
+interface FeatureCardProps {
+  icon: ReactNode;
+  title: string;
+  description: string;
+}
 export default function HomePage() {
   const { user } = useAuth();
 
@@ -64,7 +69,7 @@ export default function HomePage() {
   );
 }
 
-function FeatureCard({ icon, title, description }) {
+function FeatureCard({ icon, title, description }: FeatureCardProps) {
   return (
     <Card className="shadow-md hover:shadow-lg transition-all flex flex-col items-center text-center p-6">
       <CardContent className="flex flex-col items-center text-center">

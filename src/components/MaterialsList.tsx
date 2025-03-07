@@ -33,7 +33,7 @@ export function MaterialsList({
   }
 
   return (
-    <Table>
+    <Table className="mt-4">
       <TableHeader>
         <TableRow>
           <TableHead>Material</TableHead>
@@ -54,6 +54,7 @@ export function MaterialsList({
             </TableCell>
             <TableCell>
               <Button
+                className=" cursor-pointer"
                 variant="ghost"
                 size="icon"
                 onClick={() => onDelete(material.id)}

@@ -63,26 +63,27 @@ export function MaterialsForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="flex items-center justify-end space-x-2">
+      <div className="flex items-center justify-left space-x-2">
         <Label htmlFor="useInventory">Use Inventory</Label>
         <Switch
+          className="cursor-pointer"
           id="useInventory"
           checked={useInventory}
           onCheckedChange={onToggleInventory}
         />
       </div>
-
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-8 mb-8">
         {useInventory ? (
           <div className="space-y-2">
-            <Label>Material</Label>
+            <Label>Material Name</Label>
+
             <Select
               value={newMaterial.name}
               onValueChange={(value) =>
                 setNewMaterial({ ...newMaterial, name: value })
               }
             >
-              <SelectTrigger>
+              <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select material" />
               </SelectTrigger>
               <SelectContent>
@@ -150,7 +151,7 @@ export function MaterialsForm({
         </div>
       </div>
 
-      <Button type="submit" className="w-full">
+      <Button type="submit" className="w-full lg:w-auto cursor-pointer">
         Add Material
       </Button>
     </form>

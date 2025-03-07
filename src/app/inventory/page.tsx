@@ -73,7 +73,7 @@ export default function InventoryPage() {
       name: newMaterial.name,
       quantity: Number(newMaterial.quantity), // Ensure quantity is a number
       price: Number(newMaterial.price), // Ensure price is a number
-      users: [user.uid], // Add the current user to the users array
+      users: [user?.uid], // Add the current user to the users array
     };
 
     const docRef = await addDoc(collection(db, "inventory"), newMaterialData);

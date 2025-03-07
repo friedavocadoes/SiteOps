@@ -14,10 +14,10 @@ export default function LoginPage() {
   const {
     user,
     loginWithGoogle,
-    loginWithGitHub,
+    // loginWithGitHub,
     loginWithEmail,
     registerWithEmail,
-    sendEmailVerification,
+    // sendEmailVerification,
   } = useAuth();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -53,6 +53,7 @@ export default function LoginPage() {
             // );
           } catch (regError) {
             setError("Failed to register. Please try again.");
+            console.error(regError);
           }
         }
       } else {

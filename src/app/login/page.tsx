@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import { db } from "../firebase/config";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { UserCredential } from "firebase/auth";
+// import { UserCredential } from "firebase/auth";
 
 type UserData = {
   email: string | null;

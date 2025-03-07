@@ -40,8 +40,8 @@ export default function SiteDetailsPage() {
       await addUser(userData);
       setShowAddUser(false);
       setUserError(null);
-    } catch (error) {
-      setUserError("Failed to add user. Please try again.");
+    } catch (e) {
+      setUserError("Failed to add user. Please try again." + e);
     }
   };
 

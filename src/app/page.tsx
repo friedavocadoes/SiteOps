@@ -43,7 +43,7 @@ export default function Home() {
     } else {
       fetchSites();
     }
-  }, [user, router]);
+  }, [user]);
 
   // Fetch sites specific to the logged-in user
   const fetchSites = async () => {

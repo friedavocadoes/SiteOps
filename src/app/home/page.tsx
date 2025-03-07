@@ -7,6 +7,8 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import { FaTools, FaClipboardList, FaUsers } from "react-icons/fa";
 import { ReactNode } from "react";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 interface FeatureCardProps {
   icon: ReactNode;
   title: string;
@@ -14,6 +16,13 @@ interface FeatureCardProps {
 }
 export default function HomePage() {
   const { user } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user) {
+      router.push("/");
+    }
+  }, [user]);
 
   return (
     <>

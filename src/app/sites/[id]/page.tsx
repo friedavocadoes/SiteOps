@@ -20,17 +20,20 @@ export default function SiteDetailsPage() {
   const router = useRouter();
   const id = typeof params.id === "string" ? params.id : params.id?.[0];
 
-  if (!id) {
-    return <div>Error: Site ID is required</div>;
-  }
-
+  // Ensure hooks are called unconditionally
   const [showAddUser, setShowAddUser] = useState(false);
   const [userError, setUserError] = useState<string | null>(null);
   const [useInventoryState, setUseInventoryState] = useState(false);
 
-  const { materials, loading, addMaterial, deleteMaterial } = useMaterials(id);
-  const { addUser } = useSiteUsers(id);
+  const { materials, loading, addMaterial, deleteMaterial } = useMaterials(
+    id || ""
+  );
+  const { addUser } = useSiteUsers(id || "");
   const { inventory, updateInventoryQuantity } = useInventory();
+
+  if (!id) {
+    return <div>Error: Site ID is required</div>;
+  }
 
   const handleAddUser = async (userData: Omit<SiteUser, "id">) => {
     try {

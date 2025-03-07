@@ -8,7 +8,7 @@ import {
   GoogleAuthProvider,
   UserCredential,
 } from "firebase/auth";
-import { auth, googleProvider } from "../app/firebase/config";
+import { auth } from "../app/firebase/config";
 
 interface AuthContextType {
   user: User | null;

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { db } from "@/app/firebase/config";
-import { collection, getDocs, query, orderBy, doc, updateDoc } from "firebase/firestore";
+import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { InventoryItem } from "@/types";
 
 export function useInventory() {

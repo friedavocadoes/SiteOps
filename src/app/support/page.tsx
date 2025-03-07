@@ -12,7 +12,7 @@ export default function SupportPage() {
   return (
     <>
       <Navbar />
-      <div className="container flex flex-col items-center mx-auto p-4">
+      <div className="container flex flex-col items-center mx-auto p-4 mb-20">
         {/* Back Button */}
         <Button
           onClick={() => router.back()}

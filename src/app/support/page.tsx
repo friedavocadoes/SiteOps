@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { Label } from "@/components/ui/label";
+import Footer from "@/components/Footer";
 
 export default function SupportPage() {
   const router = useRouter();
@@ -56,6 +57,7 @@ export default function SupportPage() {
           </CardContent>
         </Card>
       </div>
+      <Footer />
     </>
   );
 }

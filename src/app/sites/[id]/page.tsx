@@ -15,6 +15,7 @@ import { useInventory } from "@/hooks/useInventory";
 import { SiteUser } from "@/types";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "@/app/firebase/config";
+import Footer from "@/components/Footer";
 
 export default function SiteDetailsPage() {
   const { user } = useAuth();
@@ -116,6 +117,7 @@ export default function SiteDetailsPage() {
           </CardContent>
         </Card>
       </div>
+      <Footer />
     </>
   );
 }

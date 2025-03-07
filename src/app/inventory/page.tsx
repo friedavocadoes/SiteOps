@@ -18,6 +18,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import Navbar from "@/components/Navbar";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext"; // Import useAuth
+import Footer from "@/components/Footer";
 
 type Material = {
   id: string;
@@ -157,6 +158,7 @@ export default function InventoryPage() {
           </CardContent>
         </Card>
       </div>
+      <Footer />
     </>
   );
 }

@@ -9,7 +9,7 @@ import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Link from "next/link";
 import { FirebaseError } from "firebase/app";
-
+import Footer from "@/components/Footer";
 export default function LoginPage() {
   const {
     user,
@@ -67,8 +67,8 @@ export default function LoginPage() {
   return (
     <>
       <Navbar />
-      <div className="flex items-center justify-center min-h-screen">
-        <Card className="w-full max-w-md p-6 text-center bg-black shadow-lg">
+      <div className="flex items-center justify-center min-h-screen bg-black md:bg-white">
+        <Card className="w-full border-none max-w-md -mt-35 md:mt-0 p-6 text-center bg-black shadow-lg">
           <CardHeader>
             <CardTitle className="text-white">Login</CardTitle>
           </CardHeader>
@@ -142,6 +142,7 @@ export default function LoginPage() {
           </CardContent>
         </Card>
       </div>
+      <Footer />
     </>
   );
 }

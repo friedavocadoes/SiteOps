@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export default function ForgotPasswordPage() {
   const { sendPasswordResetEmail } = useAuth();
@@ -60,6 +61,7 @@ export default function ForgotPasswordPage() {
           </CardContent>
         </Card>
       </div>
+      <Footer />
     </>
   );
 }

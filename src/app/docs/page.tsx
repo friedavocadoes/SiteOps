@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import { Menu } from "lucide-react";
+import Footer from "@/components/Footer";
 
 const sections = [
   { id: "introduction", title: "Introduction" },
@@ -67,6 +68,7 @@ export default function DocsPage() {
           ))}
         </main>
       </div>
+      <Footer />
     </>
   );
 }

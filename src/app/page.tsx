@@ -29,6 +29,7 @@ import {
 } from "firebase/firestore";
 import { Skeleton } from "../components/ui/skeleton";
 import { Site } from "@/types";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   const [sites, setSites] = useState<Site[]>([]);
@@ -176,6 +177,7 @@ export default function Home() {
           </CardContent>
         </Card>
       </div>
+      <Footer />
     </>
   );
 }

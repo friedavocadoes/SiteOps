@@ -9,6 +9,7 @@ import { FaTools, FaClipboardList, FaUsers } from "react-icons/fa";
 import { ReactNode } from "react";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Footer from "@/components/Footer";
 interface FeatureCardProps {
   icon: ReactNode;
   title: string;
@@ -74,6 +75,7 @@ export default function HomePage() {
           />
         </section>
       </div>
+      <Footer />
     </>
   );
 }

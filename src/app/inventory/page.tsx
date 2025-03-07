@@ -8,6 +8,8 @@ import {
   getDocs,
   deleteDoc,
   doc,
+  query,
+  where,
 } from "firebase/firestore";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import Navbar from "@/components/Navbar";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext"; // Import useAuth
 
 type Material = {
   id: string;
@@ -24,6 +27,7 @@ type Material = {
 };
 
 export default function InventoryPage() {
+  const { user } = useAuth(); // Get the logged-in user
   const [materials, setMaterials] = useState<Material[]>([]);
   const router = useRouter();
 
@@ -35,11 +39,19 @@ export default function InventoryPage() {
   });
 
   useEffect(() => {
-    fetchMaterials();
-  }, []);
+    if (user) {
+      fetchMaterials();
+    }
+  }, [user]);
 
   const fetchMaterials = async () => {
-    const querySnapshot = await getDocs(collection(db, "inventory"));
+    if (!user) return;
+
+    const q = query(
+      collection(db, "inventory"),
+      where("users", "array-contains", user.uid)
+    );
+    const querySnapshot = await getDocs(q);
     const materialsData: Material[] = querySnapshot.docs.map((doc) => {
       const data = doc.data();
       return {
@@ -61,6 +73,7 @@ export default function InventoryPage() {
       name: newMaterial.name,
       quantity: Number(newMaterial.quantity), // Ensure quantity is a number
       price: Number(newMaterial.price), // Ensure price is a number
+      users: [user.uid], // Add the current user to the users array
     };
 
     const docRef = await addDoc(collection(db, "inventory"), newMaterialData);

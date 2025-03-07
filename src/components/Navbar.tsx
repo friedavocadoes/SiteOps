@@ -23,7 +23,10 @@ export default function Navbar() {
   return (
     <nav className="flex items-center justify-between p-4 px-6 bg-black text-white shadow-md">
       {/* Left - Logo */}
-      <Link href="/" className="text-xl font-bold tracking-wide">
+      <Link
+        href={user ? "/" : "/home"}
+        className="text-xl font-bold tracking-wide"
+      >
         SiteOps
       </Link>
 

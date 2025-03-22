@@ -79,7 +79,7 @@ Pull requests are welcome! For major changes, please open an issue first.
 [![CC BY-SA 4.0][cc-by-sa-shield]][cc-by-sa]
 
 SiteOps © 2025 by Gautham M is licensed under
-[Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License][cc-by-nc-sa].
+[Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License][cc-by-sa].
 
 [![CC BY-SA 4.0][cc-by-sa-image]][cc-by-sa]
 

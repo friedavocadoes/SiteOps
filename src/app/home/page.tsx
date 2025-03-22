@@ -15,6 +15,7 @@ interface FeatureCardProps {
   title: string;
   description: string;
 }
+
 export default function HomePage() {
   const { user } = useAuth();
   const router = useRouter();
